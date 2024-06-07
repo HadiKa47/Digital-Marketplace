@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import {
   EditorContent,
+  JSONContent,
   useEditor,
   type Editor,
 } from "@tiptap/react";
@@ -72,15 +73,23 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
   );
 };
 
-export function TipTapEditor(){
-
+export function TipTapEditor({
+  setJson,
+  json,
+}: {
+  setJson: any;
+  json: JSONContent | null;
+}) {
   const editor = useEditor({
     extensions: [StarterKit],
-    content:<p>Hello World.!</p>,
+    content: json,
     editorProps: {
       attributes: {
         class: "focus:outline-none min-h-[150px]  prose prose-sm sm:prose-base",
       },
+    },
+    onUpdate: ({ editor }) => {
+      setJson(editor.getJSON());
     },
   });
 

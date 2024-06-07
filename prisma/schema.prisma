@@ -14,7 +14,7 @@ model User {
   firstName             String
   lastName              String
   profileImage          String
-  
+
   Product Product[]
 }
 
