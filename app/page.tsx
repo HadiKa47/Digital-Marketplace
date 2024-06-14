@@ -1,4 +1,5 @@
 import NewestProducts from "./components/NewestProducts";
+import { ProductRow } from "./components/ProductRow";
 
 export default function Home() {
   return (
@@ -7,13 +8,15 @@ export default function Home() {
         <h1>Find the best Tailwind</h1>
         <h1 className="text-primary">Templates & Icons</h1>
         <p className="lg:text-lg text-muted-foreground mx-auto mt-5 w-[90%] font-normal text-base">
-          HadiUI stands out as the premier marketplace for all things related
-          to tailwindcss, offering an unparalleled platform for both sellers and
+          HadiUI stands out as the premier marketplace for all things related to
+          tailwindcss, offering an unparalleled platform for both sellers and
           buyers alike.
         </p>
       </div>
-      <NewestProducts />
-
+      <ProductRow category="newest" />
+      <ProductRow category="templates" />
+      <ProductRow category="icons" />
+      <ProductRow category="uikits" />
     </section>
   );
 }
