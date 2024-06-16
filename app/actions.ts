@@ -84,12 +84,7 @@ export async function SellProduct(prevState: any, formData: FormData) {
       description: JSON.parse(validateFields.data.description),
     },
   });
-
-  const state: State = {
-    status: "success",
-    message: "Your Product has been created..!",
-  };
-  return state;
+  return redirect(`/product/${data.id}`);
 }
 
 export async function UpdateUserSettings(prevState: any, formData: FormData) {
@@ -144,6 +139,11 @@ export async function BuyProduct(formData: FormData) {
       price: true,
       images: true,
       productFile: true,
+      User: {
+        select: {
+          connectedAccountId: true,
+        },
+      },
     },
   });
 
@@ -163,6 +163,16 @@ export async function BuyProduct(formData: FormData) {
         quantity: 1,
       },
     ],
+    metadata: {
+      link: data?.productFile as string,
+    },
+
+    payment_intent_data: {
+      application_fee_amount: Math.round((data?.price as number) * 100) * 0.1,
+      transfer_data: {
+        destination: data?.User?.connectedAccountId as string,
+      },
+    },
     success_url: "http://localhost:3000/payment/success",
     cancel_url: "http://localhost:3000/payment/cancel",
   });
@@ -196,4 +206,29 @@ export async function CreateStripeAccoutnLink() {
   });
 
   return redirect(accountLink.url);
+}
+
+export async function GetStripeDashboardLink() {
+  const { getUser } = getKindeServerSession();
+
+  const user = await getUser();
+
+  if (!user) {
+    throw new Error();
+  }
+
+  const data = await prisma.user.findUnique({
+    where: {
+      id: user.id,
+    },
+    select: {
+      connectedAccountId: true,
+    },
+  });
+
+  const loginLink = await stripe.accounts.createLoginLink(
+    data?.connectedAccountId as string
+  );
+
+  return redirect(loginLink.url);
 }
